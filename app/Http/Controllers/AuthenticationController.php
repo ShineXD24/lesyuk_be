@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthenticationController extends Controller
 {
     public function register(Request $request){
+        
         try{
         $request->validate([
             'name' => 'required|string',
@@ -18,6 +19,7 @@ class AuthenticationController extends Controller
             'password' => 'required|string|min:6|max:20',
             // 'no_hp' => 'required|digits:10|unique:users',
         ]);
+        
         // $token = getenv("TWILIO_AUTH_TOKEN");
         // $twilio_sid = getenv("TWILIO_SID");
         // $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
@@ -25,13 +27,15 @@ class AuthenticationController extends Controller
         // $twilio->verify->v2->services($twilio_verify_sid)
         //     ->verifications
         //     ->create($data['no_hp'], "sms");
-
+        
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password)
+            
             // 'no_hp' => $request->no_hp,
         ]);
+        
         // return redirect()->route('verify')->with(['no_hp' => $data['no_hp']]);
 
         
@@ -46,8 +50,13 @@ class AuthenticationController extends Controller
             return response()->json([
                 'message' => 'Gagal Daftar!',
                 'error' => $e->getMessage()
-            ], 409);
+            ], 409);          
         }
+    }
+
+    public function register_action(request $request)
+    {
+        return redirect()->route('login')->with('success', 'Registration success. Please login!');
     }
 
     public function login(Request $request){
